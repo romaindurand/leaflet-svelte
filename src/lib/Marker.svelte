@@ -1,47 +1,34 @@
 <script lang="ts">
-	// import L from 'leaflet';
-	import type { Marker, LatLngTuple, LayerGroup } from 'leaflet';
-	import { getContext, setContext } from 'svelte';
+	import type { Marker, LatLngTuple, Map } from 'leaflet';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 
-	let classNames: string | undefined = undefined;
-	export { classNames as class };
-
-	export let marker: Marker | undefined = undefined;
 	export let width = 30;
 	export let height = 30;
 	export let latLng: LatLngTuple;
 
-	const layerGroup = getContext<() => LayerGroup>('layerGroup')();
+	let markerElement: HTMLElement;
+	let marker: Marker;
+
+	const map = getContext<() => Map>('map')();
 	setContext('layer', () => marker);
 
-	function createMarker(markerElement: HTMLElement) {
-		async function useLeaflet() {
-			const L = await import('leaflet');
-			let icon = L.divIcon({
-				html: markerElement,
-				className: 'map-marker',
-				iconSize: L.point(width, height)
-			});
-			marker = L.marker(latLng, { icon }).addTo(layerGroup);
-		}
+	onMount(async () => {
+		const L = await import('leaflet');
+		let icon = L.divIcon({
+			html: markerElement,
+			className: 'map-marker',
+			iconSize: L.point(width, height)
+		});
+		marker = L.marker(latLng, { icon }).addTo(map);
+	});
 
-		useLeaflet();
-
-		return {
-			destroy() {
-				if (marker) {
-					marker.remove();
-					marker = undefined;
-				}
-			}
-		};
-	}
+	onDestroy(() => {
+		marker?.remove();
+	});
 </script>
 
-<div class="hidden">
-	<div use:createMarker class={classNames}>
-		{#if marker}
-			<slot />
-		{/if}
-	</div>
+<div bind:this={markerElement}>
+	{#if marker}
+		<slot />
+	{/if}
 </div>

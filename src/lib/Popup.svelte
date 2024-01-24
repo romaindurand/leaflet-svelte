@@ -1,53 +1,43 @@
 <script lang="ts">
-	import type { Marker, Popup } from 'leaflet';
+	import type { Layer, Popup } from 'leaflet';
 
-	import { getContext } from 'svelte';
-	let classNames: string | undefined = undefined;
-	export { classNames as class };
+	import { getContext, onDestroy, onMount } from 'svelte';
+
 	export let popup: Popup | undefined = undefined;
+
+	let popupElement: HTMLElement;
+
 	let showContents = false;
 	let popupOpen = false;
-	const layer = getContext<() => Marker>('layer')();
+	const layer = getContext<() => Layer>('layer')();
 
-	function createPopup(popupElement: HTMLElement) {
-		// let popup
-		async function useLeaflet() {
-			const L = await import('leaflet');
-			popup = L.popup().setContent(popupElement);
-			layer.bindPopup(popup);
-			layer.on('popupopen', () => {
-				popupOpen = true;
-				showContents = true;
-			});
-			layer.on('popupclose', () => {
-				popupOpen = false;
-				// Wait for the popup to completely fade out before destroying it.
-				// Otherwise the fade out looks weird as the contents disappear too early.
-				setTimeout(() => {
-					if (!popupOpen) {
-						showContents = false;
-					}
-				}, 500);
-			});
-		}
-
-		useLeaflet();
-		return {
-			destroy() {
-				if (popup) {
-					layer.unbindPopup();
-					popup.remove();
-					popup = undefined;
+	onMount(async () => {
+		const L = await import('leaflet');
+		popup = L.popup().setContent(popupElement);
+		layer.bindPopup(popup);
+		layer.on('popupopen', () => {
+			popupOpen = true;
+			showContents = true;
+		});
+		layer.on('popupclose', () => {
+			popupOpen = false;
+			// change the state after the CSS transition
+			setTimeout(() => {
+				if (!popupOpen) {
+					showContents = false;
 				}
-			}
-		};
-	}
+			}, 500);
+		});
+	});
+
+	onDestroy(() => {
+		layer.unbindPopup();
+		popup?.remove();
+	});
 </script>
 
-<div class="hidden">
-	<div use:createPopup class={classNames}>
-		{#if showContents}
-			<slot />
-		{/if}
-	</div>
+<div bind:this={popupElement}>
+	{#if showContents}
+		<slot />
+	{/if}
 </div>
