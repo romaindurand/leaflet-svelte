@@ -10,9 +10,11 @@
 	import Popup from '$lib/Popup.svelte';
 	import MarkerIcon from '$lib/MarkerIcon.svelte';
 
+	export let data;
+
 	let map: L.Map;
 	const initialView: L.LatLngTuple = [48.85252974671835, 2.278322741840701];
-	let markerLocations: L.LatLngTuple[] = [];
+	let markerLocations: L.LatLngTuple[] = data.points;
 
 	$: colors = scaleSequential(interpolateRainbow).domain([0, markerLocations.length - 1]);
 	$: lines = markerLocations.slice(1).map((latLng, i) => {
