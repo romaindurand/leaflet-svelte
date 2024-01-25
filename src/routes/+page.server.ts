@@ -9,7 +9,10 @@ export async function load() {
 	);
 	return {
 		points: pois.map((poi) => {
-			return [poi.location.longitude, poi.location.latitude] as LatLngTuple;
+			return {
+				name: poi.name,
+				lnglat: [poi.location.longitude, poi.location.latitude] as LatLngTuple
+			};
 		})
 	};
 }

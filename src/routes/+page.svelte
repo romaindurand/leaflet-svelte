@@ -14,7 +14,7 @@
 
 	let map: L.Map;
 	const initialView: L.LatLngTuple = [48.85252974671835, 2.278322741840701];
-	let markerLocations: L.LatLngTuple[] = data.points;
+	let markerLocations: L.LatLngTuple[] = data.points.map((p) => p.lnglat);
 
 	$: colors = scaleSequential(interpolateRainbow).domain([0, markerLocations.length - 1]);
 	$: lines = markerLocations.slice(1).map((latLng, i) => {
@@ -49,10 +49,20 @@
 		<Polyline {latLngs} lineStyle={{ color, opacity: 0.5 }} />
 	{/each}
 
-	{#each markerLocations as latLng}
+	{#each markerLocations as latLng, i}
 		<Marker {latLng} width={30} height={30}>
 			<MarkerIcon />
-			<Popup>A popup! {latLng[0]}, {latLng[1]}</Popup>
+			<Popup>
+				<div>
+					{data.points[i].name}
+				</div>
+				<div>
+					{latLng[0]}
+				</div>
+				<div>
+					{latLng[1]}
+				</div>
+			</Popup>
 		</Marker>
 	{/each}
 </Map>

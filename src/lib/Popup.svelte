@@ -41,3 +41,9 @@
 		<slot />
 	{/if}
 </div>
+
+<style>
+	div {
+		width: 120px;
+	}
+</style>
