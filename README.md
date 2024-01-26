@@ -10,7 +10,7 @@
 
 - Copy/paste/rename .env.example to .env
 - Configure the postgresql url in .env with the appropriate user, password and dbname
-- `pnpm i`
+- `pnpm i` (`libpg-query` may need gcc, g++, make and cmake)
 - `pnpm db:seed`
 
 Run with `pnpm dev`

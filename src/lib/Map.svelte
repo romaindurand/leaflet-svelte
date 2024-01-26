@@ -1,5 +1,7 @@
 <script lang="ts">
 	import 'leaflet/dist/leaflet.css';
+	import 'leaflet.markercluster/dist/leaflet.markercluster';
+	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import type { LatLngTuple, Map } from 'leaflet';
 	import { createEventDispatcher, onMount, setContext } from 'svelte';
 

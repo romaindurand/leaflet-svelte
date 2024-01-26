@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Marker, LatLngTuple, Map } from 'leaflet';
+	import type { Marker, LatLngTuple, Map, LayerGroup } from 'leaflet';
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 
 	export let width = 30;
@@ -10,6 +10,7 @@
 	let marker: Marker;
 
 	const map = getContext<() => Map>('map')();
+	const layer = getContext<() => LayerGroup>('layer')();
 	setContext('layer', () => marker);
 
 	onMount(async () => {
