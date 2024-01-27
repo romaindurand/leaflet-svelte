@@ -12,7 +12,7 @@
 	const layer = getContext<() => Layer>('layer')();
 
 	onMount(async () => {
-		const L = await import('leaflet');
+		const L = window.L;
 		popup = L.popup().setContent(popupElement);
 		layer.bindPopup(popup);
 		layer.on('popupopen', () => {

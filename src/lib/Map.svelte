@@ -1,6 +1,5 @@
 <script lang="ts">
 	import 'leaflet/dist/leaflet.css';
-	import 'leaflet.markercluster/dist/leaflet.markercluster';
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import type { LatLngTuple, Map } from 'leaflet';
 	import { createEventDispatcher, onMount, setContext } from 'svelte';
@@ -16,7 +15,7 @@
 	export { map };
 
 	onMount(async () => {
-		const L = await import('leaflet');
+		const L = window.L;
 		map = L.map(container)
 			.on('zoom', (e) => dispatch('zoom', e))
 			.on('click', (e) => dispatch('click', e))

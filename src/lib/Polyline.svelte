@@ -11,7 +11,7 @@
 	const dispatch = createEventDispatcher();
 
 	onMount(async () => {
-		const L = await import('leaflet');
+		const L = window.L;
 		line = new L.Polyline(latLngs);
 		line.on('click', (e) => dispatch('click', e));
 		line.addTo(map);

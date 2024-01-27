@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MarkerClusterGroup from './../lib/MarkerClusterGroup.svelte';
 	import { scaleSequential } from 'd3-scale';
 	import { interpolateRainbow } from 'd3-scale-chromatic';
 	import '../global.css';
@@ -12,6 +13,7 @@
 
 	export let data;
 
+	let leafletLoaded = false;
 	let map: L.Map;
 	const initialView: L.LatLngTuple = [48.85252974671835, 2.278322741840701];
 	let markerLocations: L.LatLngTuple[] = data.points.map((p) => p.lnglat);
@@ -34,35 +36,51 @@
 	function resizeMap() {
 		map?.invalidateSize();
 	}
+
+	function leafletLoader(node: HTMLElement) {
+		import('leaflet').then(() => {
+			import('leaflet.markercluster').then(() => {
+				leafletLoaded = true;
+				console.log(window.L);
+				debugger;
+			});
+		});
+	}
 </script>
 
-<svelte:window on:resize={resizeMap} />
+<svelte:window on:resize={resizeMap} use:leafletLoader />
 
-<Map
-	bind:map
-	latLng={initialView}
-	zoom={18}
-	on:click={onMapClick}
-	on:zoom={() => console.log('map zoom')}
->
-	{#each lines as { latLngs, color }}
-		<Polyline {latLngs} lineStyle={{ color, opacity: 0.5 }} />
-	{/each}
+<div></div>
 
-	{#each markerLocations as latLng, i}
-		<Marker {latLng} width={30} height={30}>
-			<MarkerIcon />
-			<Popup>
-				<div>
-					{data.points[i].name}
-				</div>
-				<div>
-					{latLng[0]}
-				</div>
-				<div>
-					{latLng[1]}
-				</div>
-			</Popup>
-		</Marker>
-	{/each}
-</Map>
+{#if leafletLoaded}
+	<Map
+		bind:map
+		latLng={initialView}
+		zoom={18}
+		on:click={onMapClick}
+		on:zoom={() => console.log('map zoom')}
+	>
+		{#each lines as { latLngs, color }}
+			<Polyline {latLngs} lineStyle={{ color, opacity: 0.5 }} />
+		{/each}
+
+		<MarkerClusterGroup>
+			{#each markerLocations as latLng, i}
+				<Marker {latLng} width={30} height={30}>
+					<MarkerIcon />
+					<Popup>
+						<div>
+							{data?.points[i]?.name}
+						</div>
+						<div>
+							{latLng[0]}
+						</div>
+						<div>
+							{latLng[1]}
+						</div>
+					</Popup>
+				</Marker>
+			{/each}
+		</MarkerClusterGroup>
+	</Map>
+{/if}
