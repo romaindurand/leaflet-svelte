@@ -4,11 +4,7 @@ import type { Actions } from './$types';
 import type { Load } from '@sveltejs/kit';
 
 export const load = async function () {
-	const pois = await prisma.pointOfInterest.findClosestPoints(
-		44.41117247990487,
-		1.188196086038296,
-		100
-	);
+	const pois = await findClosestPointsToEiffelTower();
 	return {
 		points: normalizePoints(pois)
 	};
@@ -22,11 +18,7 @@ export const actions = {
 			latitude: Number(formData.get('lat')),
 			longitude: Number(formData.get('lng'))
 		});
-		const points = await prisma.pointOfInterest.findClosestPoints(
-			44.41117247990487,
-			1.188196086038296,
-			100
-		);
+		const points = await findClosestPointsToEiffelTower();
 		return { success: true, points: normalizePoints(points) };
 	}
 } satisfies Actions;
@@ -38,4 +30,13 @@ function normalizePoints(pois: MyPointOfInterest[]) {
 			lnglat: [poi.location.longitude, poi.location.latitude] as LatLngTuple
 		};
 	});
+}
+
+async function findClosestPointsToEiffelTower() {
+	const pois = await prisma.pointOfInterest.findClosestPoints(
+		48.8584104782701,
+		2.2944907544423487,
+		100
+	);
+	return pois;
 }

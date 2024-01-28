@@ -52,6 +52,6 @@
 		"@prisma/client": "5.8.1"
 	},
 	"prisma": {
-		"seed": "ts-node --esm prisma/seed.ts"
+		"seed": "node --loader ts-node/esm ./prisma/seed.ts"
 	}
 }
