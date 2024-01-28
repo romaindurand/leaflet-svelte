@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Layer, Popup } from 'leaflet';
-
 	import { getContext, onDestroy, onMount } from 'svelte';
+	const L = globalThis.window.L;
 
 	export let popup: Popup | undefined = undefined;
 
@@ -12,7 +12,6 @@
 	const layer = getContext<() => Layer>('layer')();
 
 	onMount(async () => {
-		const L = window.L;
 		popup = L.popup().setContent(popupElement);
 		layer.bindPopup(popup);
 		layer.on('popupopen', () => {

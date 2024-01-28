@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Marker, LatLngTuple, Map, LayerGroup } from 'leaflet';
 	import { getContext, onDestroy, onMount, setContext, tick } from 'svelte';
+	const L = globalThis.window.L;
 
 	export let width = 30;
 	export let height = 30;
@@ -14,9 +15,7 @@
 	setContext('layer', () => marker);
 
 	onMount(async () => {
-		await tick(); // waits for next paint
-		const L = window.L;
-		console.log('Marker mounted');
+		await tick(); // waits for next paint so layers and map are done rendering
 		const layerGroup = getLayerGroup?.();
 		const mapOrLayerGroup = layerGroup || map;
 		let icon = L.divIcon({

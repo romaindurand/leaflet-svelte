@@ -5,7 +5,7 @@ type MyPoint = {
 	longitude: number;
 };
 
-type MyPointOfInterest = {
+export type MyPointOfInterest = {
 	name: string;
 	location: MyPoint;
 };

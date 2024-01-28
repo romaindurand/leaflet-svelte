@@ -3,19 +3,19 @@
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import type { LatLngTuple, Map } from 'leaflet';
 	import { createEventDispatcher, onMount, setContext } from 'svelte';
+	const L = globalThis.window.L;
 
 	export let latLng: LatLngTuple;
 	export let zoom: number;
 
 	const dispatch = createEventDispatcher();
-
 	let map: Map;
+
 	setContext('map', () => map);
 	let container: HTMLElement;
 	export { map };
 
 	onMount(async () => {
-		const L = window.L;
 		map = L.map(container)
 			.on('zoom', (e) => dispatch('zoom', e))
 			.on('click', (e) => dispatch('click', e))
@@ -38,3 +38,10 @@
 		<slot {map} />
 	{/if}
 </div>
+
+<style>
+	.Map :global(.leaflet-div-icon) {
+		background-color: unset;
+		border: none;
+	}
+</style>
