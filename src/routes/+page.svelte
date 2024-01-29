@@ -6,12 +6,13 @@
 	import Map from '$lib/Map.svelte';
 	import type L from 'leaflet';
 	import Polyline from '$lib/Polyline.svelte';
-	import type { LatLngTuple } from 'leaflet';
+	import type { LatLngBounds, LatLngTuple } from 'leaflet';
 	import Marker from '$lib/Marker.svelte';
 	import Popup from '$lib/Popup.svelte';
 	import MarkerIcon from '$lib/MarkerIcon.svelte';
 	import MarkerForm from '$lib/MarkerForm.svelte';
 	import type { ActionData } from './$types.js';
+	import { fetchPointsInBounds } from '$lib';
 
 	export let data;
 	export let form: ActionData;
@@ -59,6 +60,11 @@
 			});
 		});
 	}
+
+	async function onViewChange(event: CustomEvent<{ bounds: LatLngBounds }>) {
+		points = await fetchPointsInBounds(event.detail.bounds);
+		console.log({ points });
+	}
 </script>
 
 <svelte:window on:resize={resizeMap} use:leafletLoader />
@@ -75,10 +81,11 @@
 		zoom={18}
 		on:click={onMapClick}
 		on:zoom={() => console.log('map zoom')}
+		on:viewChange={onViewChange}
 	>
 		<!-- use stringification of latLngs as key to identify lines -->
 		{#each lines as { latLngs, color } (JSON.stringify(latLngs))}
-			<Polyline {latLngs} lineStyle={{ color, opacity: 0.5 }} />
+			<Polyline {latLngs} lineStyle={{ color, opacity: 1, weight: 5 }} />
 		{/each}
 
 		<MarkerClusterGroup>

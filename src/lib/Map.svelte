@@ -3,6 +3,8 @@
 	import 'leaflet.markercluster/dist/MarkerCluster.css';
 	import type { LatLngTuple, Map } from 'leaflet';
 	import { createEventDispatcher, onMount, setContext } from 'svelte';
+	import debounce from 'debounce';
+
 	const L = globalThis.window.L;
 
 	export let latLng: LatLngTuple;
@@ -15,9 +17,17 @@
 	let container: HTMLElement;
 	export { map };
 
+	function dispatchViewChange() {
+		dispatch('viewChange', { bounds: map?.getBounds() });
+	}
+
+	const debounceDispatchViewChange = debounce(dispatchViewChange, 500);
+
 	onMount(async () => {
 		map = L.map(container)
-			.on('zoom', (e) => dispatch('zoom', e))
+			.on('zoom', debounceDispatchViewChange)
+			.on('moveend', debounceDispatchViewChange)
+			.on('zoomend', debounceDispatchViewChange)
 			.on('click', (e) => dispatch('click', e))
 			.setView(latLng, zoom)
 			.setMinZoom(5)

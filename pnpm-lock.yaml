@@ -45,6 +45,9 @@ devDependencies:
   d3-scale-chromatic:
     specifier: ^3.0.0
     version: 3.0.0
+  debounce:
+    specifier: ^2.0.0
+    version: 2.0.0
   dotenv:
     specifier: ^16.4.1
     version: 16.4.1
@@ -1688,6 +1691,11 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       d3-array: 3.2.4
+    dev: true
+
+  /debounce@2.0.0:
+    resolution: {integrity: sha512-xRetU6gL1VJbs85Mc4FoEGSjQxzpdxRyFhe3lmWFyy2EzydIcD4xzUvRJMD+NPDfMwKNhxa3PvsIOU32luIWeA==}
+    engines: {node: '>=18'}
     dev: true
 
   /debug@4.3.4:

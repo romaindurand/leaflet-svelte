@@ -28,7 +28,9 @@
 	});
 
 	onDestroy(() => {
-		marker?.remove();
+		const layerGroup = getLayerGroup?.();
+		const mapOrLayerGroup = layerGroup || map;
+		mapOrLayerGroup.removeLayer(marker);
 	});
 </script>
 

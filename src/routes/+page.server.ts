@@ -1,7 +1,7 @@
-import { prisma, type MyPointOfInterest } from '$lib/prisma';
-import type { LatLngTuple } from 'leaflet';
+import { prisma } from '$lib/prisma';
 import type { Actions } from './$types';
 import type { Load } from '@sveltejs/kit';
+import { normalizePoints } from '$lib';
 
 export const load = async function () {
 	const pois = await findClosestPointsToEiffelTower();
@@ -23,19 +23,10 @@ export const actions = {
 	}
 } satisfies Actions;
 
-function normalizePoints(pois: MyPointOfInterest[]) {
-	return pois.map((poi) => {
-		return {
-			name: poi.name,
-			lnglat: [poi.location.longitude, poi.location.latitude] as LatLngTuple
-		};
-	});
-}
-
 async function findClosestPointsToEiffelTower() {
 	const pois = await prisma.pointOfInterest.findClosestPoints(
-		48.8584104782701,
 		2.2944907544423487,
+		48.8584104782701,
 		100
 	);
 	return pois;
